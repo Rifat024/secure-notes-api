@@ -12,7 +12,8 @@ cp .env.example .env        # set MONGODB_URI and a long random JWT_SECRET
 npm install
 npm run seed                # admin, 6 users with interests, notes, posts
 npm run dev                 # http://localhost:4000
-npm test                    # 20 integration tests on an in-memory MongoDB
+npm test                    # 66 tests: 46 unit + 20 integration on an in-memory MongoDB
+npm run test:unit           # unit tests only (no database)
 npm run explain             # prints the winning query plan for every query and aggregation
 ```
 
