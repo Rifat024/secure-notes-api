@@ -136,4 +136,19 @@ The response includes the author, one page of the author's posts (newest first),
 
 ## Deploy (Vercel)
 
-`api/index.js` exports the Express app as a serverless function and caches the Mongo connection between invocations. `vercel.json` routes every path to that function. Set these environment variables: `MONGODB_URI` (MongoDB Atlas), `JWT_SECRET`, `CORS_ORIGIN` (the frontend URL).
+`api/index.js` exports the Express app as a serverless function and caches the Mongo connection between invocations. `vercel.json` routes every path to that function.
+
+```bash
+cp .env.production.example .env.production   # MONGODB_URI, CORS_ORIGIN, optional JWT_SECRET
+npm run deploy                                # add "-- --seed" to load the demo data
+```
+
+[`scripts/deploy.sh`](scripts/deploy.sh) runs these steps:
+
+1. Checks that the Vercel CLI is installed and logged in.
+2. Pings MongoDB and stops before changing anything if the database is unreachable.
+3. Sets `MONGODB_URI` and `CORS_ORIGIN` on the Vercel project. It keeps an existing `JWT_SECRET` so issued tokens stay valid, and generates one on the first deploy.
+4. Deploys to production and optionally seeds the database.
+5. Smoke-tests the live API: `/api/health` must return 200, and a login with an unknown email must return 401, which proves the database is reachable.
+
+In MongoDB Atlas, **Network Access** must allow `0.0.0.0/0`. Vercel functions don't use fixed IP addresses.

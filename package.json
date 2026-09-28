@@ -12,7 +12,8 @@
     "start": "node --env-file-if-exists=.env src/server.js",
     "seed": "node --env-file-if-exists=.env scripts/seed.js",
     "explain": "node --env-file-if-exists=.env scripts/explain.js",
-    "test": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand"
+    "test": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
+    "deploy": "bash scripts/deploy.sh"
   },
   "jest": {
     "testEnvironment": "node",
