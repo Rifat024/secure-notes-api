@@ -1,8 +1,8 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
-import { connectDB, disconnectDB } from '../src/config/db.js';
-import { createApp } from '../src/app.js';
-import { User, ROLES } from '../src/models/User.js';
+import { connectDB, disconnectDB } from '../../src/config/db.js';
+import { createApp } from '../../src/app.js';
+import { User, ROLES } from '../../src/models/User.js';
 
 let mongo;
 

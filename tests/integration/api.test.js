@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { startTestServer, stopTestServer, registerUser, createAdmin, bearer } from './setup.js';
-import { User } from '../src/models/User.js';
-import { Note } from '../src/models/Note.js';
-import { Post } from '../src/models/Post.js';
+import { User } from '../../src/models/User.js';
+import { Note } from '../../src/models/Note.js';
+import { Post } from '../../src/models/Post.js';
 
 jest.setTimeout(120000);
 
