@@ -54,6 +54,10 @@ has_env() {
   vercel env ls production 2>/dev/null | awk '{print $1}' | grep -qx "$1"
 }
 
+log "Running tests and build"
+npm test --silent >/dev/null 2>&1 || fail "Tests failed; fix them before deploying (npm test)"
+npm run build --silent >/dev/null || fail "Build failed (npm run build)"
+
 log "Checking database connectivity"
 node --input-type=module -e "
   import mongoose from 'mongoose';
@@ -80,7 +84,7 @@ log "Deployed: $API_URL"
 
 if [[ "$SEED" == true ]]; then
   log "Seeding database"
-  MONGODB_URI="$MONGODB_URI" JWT_SECRET="${JWT_SECRET:-seed-only-secret-seed-only-secret}" node scripts/seed.js
+  MONGODB_URI="$MONGODB_URI" JWT_SECRET="${JWT_SECRET:-seed-only-secret-seed-only-secret}" npm run seed --silent
 fi
 
 log "Smoke testing"

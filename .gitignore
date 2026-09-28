@@ -1,6 +1,8 @@
 node_modules
+dist
 .env
+.env.production
 .vercel
 coverage
+*.tsbuildinfo
 .DS_Store
-.env.production

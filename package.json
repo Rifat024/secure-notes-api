@@ -1,41 +1,83 @@
 {
   "name": "secure-notes-api",
   "version": "1.0.0",
-  "description": "Secure note-taking REST API with JWT auth, role-based access control, and index-backed MongoDB queries.",
-  "type": "module",
-  "main": "src/server.js",
+  "description": "Secure note-taking REST API built with NestJS: JWT auth, role-based access control, brute-force protection, and index-backed MongoDB queries.",
+  "main": "dist/main.js",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "dev": "node --watch --env-file-if-exists=.env src/server.js",
-    "start": "node --env-file-if-exists=.env src/server.js",
-    "seed": "node --env-file-if-exists=.env scripts/seed.js",
-    "explain": "node --env-file-if-exists=.env scripts/explain.js",
-    "test": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "dev": "nest start --watch",
+    "seed": "ts-node src/cli/seed.ts",
+    "explain": "ts-node src/cli/explain.ts",
+    "e2e": "node scripts/e2e.js",
     "deploy": "bash scripts/deploy.sh",
-    "test:unit": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand tests/unit",
-    "test:integration": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand tests/integration",
-    "e2e": "node scripts/e2e.js"
+    "test": "jest --runInBand",
+    "test:unit": "jest --selectProjects unit",
+    "test:integration": "jest --runInBand --selectProjects integration",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "jest": {
-    "testEnvironment": "node",
-    "testTimeout": 60000,
-    "transform": {}
+    "projects": [
+      {
+        "displayName": "unit",
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "rootDir": ".",
+        "testMatch": [
+          "<rootDir>/src/**/*.spec.ts"
+        ]
+      },
+      {
+        "displayName": "integration",
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "rootDir": ".",
+        "testMatch": [
+          "<rootDir>/test/**/*.e2e-spec.ts"
+        ],
+        "setupFiles": [
+          "<rootDir>/test/setup-env.ts"
+        ]
+      }
+    ]
   },
   "dependencies": {
+    "@fastify/cors": "^11.3.0",
+    "@fastify/helmet": "^13.1.1",
+    "@nestjs/common": "^11.2.6",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/core": "^11.2.6",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/mongoose": "^11.0.4",
+    "@nestjs/platform-fastify": "^11.2.6",
+    "@nestjs/throttler": "^6.7.1",
     "bcryptjs": "^3.0.3",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "express-rate-limit": "^8.7.0",
-    "helmet": "^8.3.0",
-    "jsonwebtoken": "^9.0.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "fastify": "^5.12.5",
     "mongoose": "^8.24.4",
-    "zod": "^4.6.5"
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "secure-json-parse": "^4.1.0"
   },
   "devDependencies": {
-    "jest": "^30.5.2",
+    "@nestjs/cli": "^11.0.24",
+    "@nestjs/testing": "^11.2.6",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^26.6.3",
+    "@types/supertest": "^7.2.1",
+    "jest": "^29.7.0",
     "mongodb-memory-server": "^11.3.0",
-    "supertest": "^7.3.0"
+    "supertest": "^7.3.0",
+    "ts-jest": "^29.4.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "fastify": "$fastify"
   }
 }
