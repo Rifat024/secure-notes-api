@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { AuthUser, Role } from '../common/roles';
-import { PageQuery } from '../common/utils/pagination';
-import { compact } from '../common/utils/compact';
-import { rethrow } from '../common/utils/rethrow';
-import { CreateNoteDto, UpdateNoteDto } from './dto/note.dto';
-import { NotesRepository } from './notes.repository';
-import { Traced } from '../common/logging/traced.decorator';
+import { AuthUser, Role } from '../common/roles.js';
+import { PageQuery } from '../common/utils/pagination.js';
+import { compact } from '../common/utils/compact.js';
+import { rethrow } from '../common/utils/rethrow.js';
+import { CreateNoteDto, UpdateNoteDto } from './dto/note.dto.js';
+import { NotesRepository } from './notes.repository.js';
+import { Traced } from '../common/logging/traced.decorator.js';
 
 @Traced()
 @Injectable()

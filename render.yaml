@@ -21,5 +21,9 @@ services:
         generateValue: true
       - key: CORS_ORIGIN
         value: https://secure-notes-web.vercel.app
+      - key: BCRYPT_ROUNDS
+        value: "10"
+      # Cloudflare in front of Render sets this and rejects client-supplied values;
+      # X-Forwarded-For is not safe here because Render keeps the caller's first entry.
       - key: CLIENT_IP_HEADER
-        sync: false
+        value: cf-connecting-ip

@@ -1,10 +1,14 @@
+import { jest } from '@jest/globals';
+
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Types } from 'mongoose';
-import { SECURITY } from '../../config/security.config';
-import { UsersRepository } from '../../users/users.repository';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { SECURITY } from '../../config/security.config.js';
+import { UsersRepository } from '../../users/users.repository.js';
+import { JwtAuthGuard } from './jwt-auth.guard.js';
+
+type AnyFn = (...args: any[]) => any;
 
 const SECRET = 'unit-test-secret-unit-test-secret';
 const jwt = new JwtService({ secret: SECRET, signOptions: { issuer: SECURITY.jwtIssuer, audience: SECURITY.jwtAudience } });
@@ -13,7 +17,7 @@ const userId = new Types.ObjectId();
 function setup(user: Record<string, unknown> | null, isPublic = false) {
   const reflector = new Reflector();
   jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(isPublic);
-  const users = { findSessionUser: jest.fn().mockResolvedValue(user) } as unknown as UsersRepository;
+  const users = { findSessionUser: jest.fn<AnyFn>().mockResolvedValue(user) } as unknown as UsersRepository;
   const request: Record<string, any> = { headers: {} };
   const context = {
     getHandler: () => undefined,

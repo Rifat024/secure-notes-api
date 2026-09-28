@@ -1,8 +1,8 @@
 import { Logger, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectConnection, MongooseModule } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
-import { AppConfig } from '../config/app.config';
+import type { Connection } from 'mongoose';
+import { AppConfig } from '../config/app.config.js';
 
 @Module({
   imports: [

@@ -1,10 +1,14 @@
+import { jest } from '@jest/globals';
+
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { Role } from '../common/roles';
-import { NotesRepository } from '../notes/notes.repository';
-import { PostsRepository } from '../posts/posts.repository';
-import { UsersRepository } from './users.repository';
-import { UsersService } from './users.service';
+import { Role } from '../common/roles.js';
+import { NotesRepository } from '../notes/notes.repository.js';
+import { PostsRepository } from '../posts/posts.repository.js';
+import { UsersRepository } from './users.repository.js';
+import { UsersService } from './users.service.js';
+
+type AnyFn = (...args: any[]) => any;
 
 describe('UsersService', () => {
   const admin = { id: new Types.ObjectId().toHexString(), role: Role.Admin, name: 'Admin', email: 'a@example.com' };
@@ -14,9 +18,9 @@ describe('UsersService', () => {
   let service: UsersService;
 
   beforeEach(() => {
-    users = { delete: jest.fn(), findForUpdate: jest.fn(), save: jest.fn((u) => Promise.resolve(u)) } as unknown as jest.Mocked<UsersRepository>;
-    notes = { deleteAllByOwner: jest.fn() } as unknown as jest.Mocked<NotesRepository>;
-    posts = { deleteAllByAuthor: jest.fn() } as unknown as jest.Mocked<PostsRepository>;
+    users = { delete: jest.fn<AnyFn>(), findForUpdate: jest.fn<AnyFn>(), save: jest.fn<AnyFn>((u) => Promise.resolve(u)) } as unknown as jest.Mocked<UsersRepository>;
+    notes = { deleteAllByOwner: jest.fn<AnyFn>() } as unknown as jest.Mocked<NotesRepository>;
+    posts = { deleteAllByAuthor: jest.fn<AnyFn>() } as unknown as jest.Mocked<PostsRepository>;
     service = new UsersService(users, notes, posts);
   });
 

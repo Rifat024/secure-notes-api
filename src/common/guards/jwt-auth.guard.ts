@@ -1,10 +1,10 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { SECURITY } from '../../config/security.config';
-import { UsersRepository } from '../../users/users.repository';
-import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import { rethrow } from '../utils/rethrow';
+import { SECURITY } from '../../config/security.config.js';
+import { UsersRepository } from '../../users/users.repository.js';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator.js';
+import { rethrow } from '../utils/rethrow.js';
 
 export interface JwtPayload {
   sub: string;

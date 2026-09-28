@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Types } from 'mongoose';
-import { rethrowDbError } from '../common/database/db-error';
-import { PageQuery, paginateFind } from '../common/utils/pagination';
-import { Post } from './schemas/post.schema';
-import { Traced } from '../common/logging/traced.decorator';
+import { Model, Types } from 'mongoose';
+import type { QueryFilter } from 'mongoose';
+import { rethrowDbError } from '../common/database/db-error.js';
+import { PageQuery, paginateFind } from '../common/utils/pagination.js';
+import { Post } from './schemas/post.schema.js';
+import { Traced } from '../common/logging/traced.decorator.js';
 
 const AUTHOR = { path: 'author', select: 'name' };
 const oid = (id: string | Types.ObjectId) => (typeof id === 'string' ? new Types.ObjectId(id) : id);
@@ -42,7 +43,7 @@ export class PostsRepository {
 
   async delete(id: string, authorId?: string): Promise<boolean> {
     try {
-      const filter: FilterQuery<Post> = { _id: id };
+      const filter: QueryFilter<Post> = { _id: id };
       if (authorId) filter.author = oid(authorId);
       const { deletedCount } = await this.model.deleteOne(filter);
       return deletedCount > 0;

@@ -2,13 +2,15 @@ import 'reflect-metadata';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
-import { Model, PipelineStage, Query } from 'mongoose';
-import { AppModule } from '../app.module';
-import { Note } from '../notes/schemas/note.schema';
-import { Post } from '../posts/schemas/post.schema';
-import { userPostsPipeline } from '../users/pipelines/user-posts.pipeline';
-import { usersByInterestPipeline } from '../users/pipelines/users-by-interest.pipeline';
-import { User } from '../users/schemas/user.schema';
+import { Model, Query } from 'mongoose';
+import type { PipelineStage } from 'mongoose';
+import { AppModule } from '../app.module.js';
+import { Role } from '../common/roles.js';
+import { Note } from '../notes/schemas/note.schema.js';
+import { Post } from '../posts/schemas/post.schema.js';
+import { userPostsPipeline } from '../users/pipelines/user-posts.pipeline.js';
+import { usersByInterestPipeline } from '../users/pipelines/users-by-interest.pipeline.js';
+import { User } from '../users/schemas/user.schema.js';
 
 /**
  * Prints the winning plan for every query and aggregation the API runs and exits non-zero if any
@@ -61,7 +63,7 @@ async function explain(): Promise<void> {
     const notes = app.get<Model<Note>>(getModelToken(Note.name));
     const posts = app.get<Model<Post>>(getModelToken(Post.name));
 
-    const user = await users.findOne({ role: 'user', 'interests.0': { $exists: true } }).lean();
+    const user = await users.findOne({ role: Role.User, interests: { $gt: '' } }).lean();
     const note = user && (await notes.findOne({ owner: user._id }).lean());
     const post = user && (await posts.findOne({ author: user._id }).lean());
     if (!user || !note || !post) throw new Error('No data found. Run `npm run seed` first.');

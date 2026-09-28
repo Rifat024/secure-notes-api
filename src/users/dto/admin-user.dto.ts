@@ -1,8 +1,8 @@
 import { ArrayMaxSize, IsArray, IsEmail, IsEnum, IsOptional, IsString, Length, MaxLength } from 'class-validator';
-import { IsStrongPassword } from '../../common/dto/password';
-import { NormalizeTags, Trim, TrimLower } from '../../common/dto/transforms';
-import { Role } from '../../common/roles';
-import { RegisterDto } from '../../auth/dto/register.dto';
+import { IsStrongPassword } from '../../common/dto/password.js';
+import { NormalizeTags, Trim, TrimLower } from '../../common/dto/transforms.js';
+import { Role } from '../../common/roles.js';
+import { RegisterDto } from '../../auth/dto/register.dto.js';
 
 export class AdminCreateUserDto extends RegisterDto {
   @IsOptional()

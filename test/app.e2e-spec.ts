@@ -1,15 +1,16 @@
+import { jest } from '@jest/globals';
 import { getModelToken } from '@nestjs/mongoose';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Model } from 'mongoose';
 import request from 'supertest';
-import TestAgent from 'supertest/lib/agent';
-import { createApp } from '../src/app.factory';
-import { LoginThrottle } from '../src/auth/schemas/login-throttle.schema';
-import { Role } from '../src/common/roles';
-import { Note } from '../src/notes/schemas/note.schema';
-import { Post } from '../src/posts/schemas/post.schema';
-import { User } from '../src/users/schemas/user.schema';
+import type TestAgent from 'supertest/lib/agent.js';
+import { createApp } from '../src/app.factory.js';
+import { LoginThrottle } from '../src/auth/schemas/login-throttle.schema.js';
+import { Role } from '../src/common/roles.js';
+import { Note } from '../src/notes/schemas/note.schema.js';
+import { Post } from '../src/posts/schemas/post.schema.js';
+import { User } from '../src/users/schemas/user.schema.js';
 
 jest.setTimeout(120_000);
 

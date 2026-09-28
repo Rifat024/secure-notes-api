@@ -1,11 +1,11 @@
 import { ArgumentMetadata, BadRequestException } from '@nestjs/common';
-import { LoginDto } from '../../auth/dto/login.dto';
-import { RegisterDto } from '../../auth/dto/register.dto';
-import { UpdateProfileDto } from '../../auth/dto/update-profile.dto';
-import { CreateNoteDto } from '../../notes/dto/note.dto';
-import { AdminCreateUserDto } from '../../users/dto/admin-user.dto';
-import { ParseObjectIdPipe } from './parse-object-id.pipe';
-import { createValidationPipe } from './validation.pipe';
+import { LoginDto } from '../../auth/dto/login.dto.js';
+import { RegisterDto } from '../../auth/dto/register.dto.js';
+import { UpdateProfileDto } from '../../auth/dto/update-profile.dto.js';
+import { CreateNoteDto } from '../../notes/dto/note.dto.js';
+import { AdminCreateUserDto } from '../../users/dto/admin-user.dto.js';
+import { ParseObjectIdPipe } from './parse-object-id.pipe.js';
+import { createValidationPipe } from './validation.pipe.js';
 
 const pipe = createValidationPipe();
 const body = (metatype: new () => object): ArgumentMetadata => ({ type: 'body', metatype });

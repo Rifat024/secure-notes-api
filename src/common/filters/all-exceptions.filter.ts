@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import type { FastifyReply } from 'fastify';
 import { Error as MongooseError } from 'mongoose';
-import { TooManyAttemptsException } from '../exceptions/too-many-attempts.exception';
+import { TooManyAttemptsException } from '../exceptions/too-many-attempts.exception.js';
 
 interface ErrorBody {
   error: string;

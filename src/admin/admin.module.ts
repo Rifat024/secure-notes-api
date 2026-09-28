@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { NotesModule } from '../notes/notes.module';
-import { UsersModule } from '../users/users.module';
-import { AdminNotesController } from './admin-notes.controller';
-import { AdminUsersController } from './admin-users.controller';
+import { NotesModule } from '../notes/notes.module.js';
+import { UsersModule } from '../users/users.module.js';
+import { AdminNotesController } from './admin-notes.controller.js';
+import { AdminUsersController } from './admin-users.controller.js';
 
 @Module({
   imports: [UsersModule, NotesModule],

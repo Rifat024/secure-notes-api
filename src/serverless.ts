@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import type { FastifyInstance } from 'fastify';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { createApp } from './app.factory';
+import { createApp } from './app.factory.js';
 
 let instance: Promise<FastifyInstance> | undefined;
 

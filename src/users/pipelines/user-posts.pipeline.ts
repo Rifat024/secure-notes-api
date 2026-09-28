@@ -1,4 +1,5 @@
-import { PipelineStage, Types } from 'mongoose';
+import { Types } from 'mongoose';
+import type { PipelineStage } from 'mongoose';
 
 export interface UserPostsOptions {
   userId: string;

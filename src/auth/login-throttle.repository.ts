@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { rethrowDbError } from '../common/database/db-error';
-import { LoginThrottle } from './schemas/login-throttle.schema';
-import { Traced } from '../common/logging/traced.decorator';
+import { rethrowDbError } from '../common/database/db-error.js';
+import { LoginThrottle } from './schemas/login-throttle.schema.js';
+import { Traced } from '../common/logging/traced.decorator.js';
 
 /** Queries against loginthrottles; the client IP is the _id, so all of them use the _id index. */
 @Traced()
@@ -39,7 +39,7 @@ export class LoginThrottleRepository {
             },
             { $set: { blockedUntil: { $cond: [{ $gte: ['$failures', maxFailures] }, blockUntil, '$blockedUntil'] } } },
           ],
-          { upsert: true, new: true },
+          { upsert: true, new: true, updatePipeline: true },
         )
         .lean()
         .exec();

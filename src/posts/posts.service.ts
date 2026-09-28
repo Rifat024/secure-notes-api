@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { AuthUser, Role } from '../common/roles';
-import { PageQuery } from '../common/utils/pagination';
-import { rethrow } from '../common/utils/rethrow';
-import { CreatePostDto } from './dto/create-post.dto';
-import { PostsRepository } from './posts.repository';
-import { Traced } from '../common/logging/traced.decorator';
+import { AuthUser, Role } from '../common/roles.js';
+import { PageQuery } from '../common/utils/pagination.js';
+import { rethrow } from '../common/utils/rethrow.js';
+import { CreatePostDto } from './dto/create-post.dto.js';
+import { PostsRepository } from './posts.repository.js';
+import { Traced } from '../common/logging/traced.decorator.js';
 
 @Traced()
 @Injectable()

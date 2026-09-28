@@ -8,7 +8,15 @@
     "plugins": [
       {
         "name": "@nestjs/swagger",
-        "options": { "classValidatorShim": true, "introspectComments": true, "dtoFileNameSuffix": [".dto.ts", ".response.ts"] }
+        "options": {
+          "classValidatorShim": true,
+          "introspectComments": true,
+          "dtoFileNameSuffix": [
+            ".dto.ts",
+            ".response.ts"
+          ],
+          "esmCompatible": true
+        }
       }
     ]
   }

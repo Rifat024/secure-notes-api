@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsString, Length } from 'class-validator';
-import { TrimLower } from '../../common/dto/transforms';
+import { TrimLower } from '../../common/dto/transforms.js';
 
 export class LoginDto {
   @ApiProperty({ example: 'admin@example.com' })

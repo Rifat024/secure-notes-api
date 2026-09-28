@@ -1,6 +1,6 @@
 import { ArrayMaxSize, IsArray, IsOptional, IsString, Length } from 'class-validator';
-import { IsStrongPassword } from '../../common/dto/password';
-import { NormalizeTags, Trim } from '../../common/dto/transforms';
+import { IsStrongPassword } from '../../common/dto/password.js';
+import { NormalizeTags, Trim } from '../../common/dto/transforms.js';
 
 export class UpdateProfileDto {
   @IsOptional()

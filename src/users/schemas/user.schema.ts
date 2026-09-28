@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
-import { HydratedDocument } from 'mongoose';
-import { SECURITY } from '../../config/security.config';
-import { Role } from '../../common/roles';
+import type { HydratedDocument } from 'mongoose';
+import { SECURITY } from '../../config/security.config.js';
+import { Role } from '../../common/roles.js';
 
 @Schema({ timestamps: true, versionKey: false })
 export class User {

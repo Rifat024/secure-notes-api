@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
-import { ErrorResponse } from '../dto/error.response';
+import { ErrorResponse } from '../dto/error.response.js';
 
 const DESCRIPTIONS: Record<number, string> = {
   400: 'Validation failed or malformed request',

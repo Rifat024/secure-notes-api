@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { rethrow } from '../utils/rethrow';
+import { rethrow } from '../utils/rethrow.js';
 
 const OBJECT_ID = /^[a-f\d]{24}$/i;
 

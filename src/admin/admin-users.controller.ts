@@ -1,16 +1,16 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { Roles } from '../common/decorators/roles.decorator';
-import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
-import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe';
-import { AuthUser, Role } from '../common/roles';
-import { AdminCreateUserDto, AdminUpdateUserDto } from '../users/dto/admin-user.dto';
-import { UsersService } from '../users/users.service';
-import { rethrow } from '../common/utils/rethrow';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import { Roles } from '../common/decorators/roles.decorator.js';
+import { PaginationQueryDto } from '../common/dto/pagination-query.dto.js';
+import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe.js';
+import { AuthUser, Role } from '../common/roles.js';
+import { AdminCreateUserDto, AdminUpdateUserDto } from '../users/dto/admin-user.dto.js';
+import { UsersService } from '../users/users.service.js';
+import { rethrow } from '../common/utils/rethrow.js';
 import { ApiBearerAuth, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ApiErrors } from '../common/decorators/api-errors.decorator';
-import { Paginated } from '../common/dto/page.response';
-import { UserResponse } from '../users/dto/user.response';
+import { ApiErrors } from '../common/decorators/api-errors.decorator.js';
+import { Paginated } from '../common/dto/page.response.js';
+import { UserResponse } from '../users/dto/user.response.js';
 
 @ApiTags('Admin')
 @ApiBearerAuth('jwt')

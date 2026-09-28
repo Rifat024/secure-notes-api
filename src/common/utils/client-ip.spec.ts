@@ -1,4 +1,4 @@
-import { clientIp } from './client-ip';
+import { clientIp } from './client-ip.js';
 
 describe('clientIp', () => {
   afterEach(() => {

@@ -2,14 +2,14 @@ import helmet from '@fastify/helmet';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { AppModule } from './app.module';
-import { createAppLogger } from './common/logging/app-logger';
-import { registerRequestLogging } from './common/logging/request-logging';
-import { registerJsonParser } from './common/http/json-parser';
-import { createValidationPipe } from './common/pipes/validation.pipe';
-import { DOCS_CSP, DOCS_PATH, setupSwagger } from './common/swagger/swagger.setup';
-import { AppConfig, appConfig } from './config/app.config';
-import { SECURITY } from './config/security.config';
+import { AppModule } from './app.module.js';
+import { createAppLogger } from './common/logging/app-logger.js';
+import { registerRequestLogging } from './common/logging/request-logging.js';
+import { registerJsonParser } from './common/http/json-parser.js';
+import { createValidationPipe } from './common/pipes/validation.pipe.js';
+import { DOCS_CSP, DOCS_PATH, setupSwagger } from './common/swagger/swagger.setup.js';
+import { AppConfig, appConfig } from './config/app.config.js';
+import { SECURITY } from './config/security.config.js';
 
 /** Builds the configured Fastify application; shared by the server, the Vercel handler, and tests. */
 export async function createApp(): Promise<NestFastifyApplication> {

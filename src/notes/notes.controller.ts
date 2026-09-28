@@ -1,15 +1,15 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
-import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe';
-import { AuthUser } from '../common/roles';
-import { CreateNoteDto, UpdateNoteDto } from './dto/note.dto';
-import { NotesService } from './notes.service';
-import { rethrow } from '../common/utils/rethrow';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import { PaginationQueryDto } from '../common/dto/pagination-query.dto.js';
+import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe.js';
+import { AuthUser } from '../common/roles.js';
+import { CreateNoteDto, UpdateNoteDto } from './dto/note.dto.js';
+import { NotesService } from './notes.service.js';
+import { rethrow } from '../common/utils/rethrow.js';
 import { ApiBearerAuth, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ApiErrors } from '../common/decorators/api-errors.decorator';
-import { Paginated } from '../common/dto/page.response';
-import { NoteResponse } from './dto/note.response';
+import { ApiErrors } from '../common/decorators/api-errors.decorator.js';
+import { Paginated } from '../common/dto/page.response.js';
+import { NoteResponse } from './dto/note.response.js';
 
 @ApiTags('Notes')
 @ApiBearerAuth('jwt')

@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Types } from 'mongoose';
-import { rethrowDbError } from '../common/database/db-error';
-import { PageQuery, paginateFind } from '../common/utils/pagination';
-import { Note } from './schemas/note.schema';
-import { Traced } from '../common/logging/traced.decorator';
+import { Model, Types } from 'mongoose';
+import type { QueryFilter } from 'mongoose';
+import { rethrowDbError } from '../common/database/db-error.js';
+import { PageQuery, paginateFind } from '../common/utils/pagination.js';
+import { Note } from './schemas/note.schema.js';
+import { Traced } from '../common/logging/traced.decorator.js';
 
 const oid = (id: string | Types.ObjectId) => (typeof id === 'string' ? new Types.ObjectId(id) : id);
 
@@ -24,7 +25,7 @@ export class NotesRepository {
 
   async paginateAll(query: PageQuery, ownerId?: string) {
     try {
-      const filter: FilterQuery<Note> = ownerId ? { owner: oid(ownerId) } : {};
+      const filter: QueryFilter<Note> = ownerId ? { owner: oid(ownerId) } : {};
       return await paginateFind(this.model, filter, query, { populate: { path: 'owner', select: 'name email' } });
     } catch (error) {
       rethrowDbError(error, 'NotesRepository.paginateAll');

@@ -1,13 +1,13 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { Roles } from '../common/decorators/roles.decorator';
-import { Role } from '../common/roles';
-import { AdminNotesQueryDto } from '../notes/dto/note.dto';
-import { NotesService } from '../notes/notes.service';
-import { rethrow } from '../common/utils/rethrow';
+import { Roles } from '../common/decorators/roles.decorator.js';
+import { Role } from '../common/roles.js';
+import { AdminNotesQueryDto } from '../notes/dto/note.dto.js';
+import { NotesService } from '../notes/notes.service.js';
+import { rethrow } from '../common/utils/rethrow.js';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ApiErrors } from '../common/decorators/api-errors.decorator';
-import { Paginated } from '../common/dto/page.response';
-import { AdminNoteResponse } from '../notes/dto/note.response';
+import { ApiErrors } from '../common/decorators/api-errors.decorator.js';
+import { Paginated } from '../common/dto/page.response.js';
+import { AdminNoteResponse } from '../notes/dto/note.response.js';
 
 @ApiTags('Admin')
 @ApiBearerAuth('jwt')

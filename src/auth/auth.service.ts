@@ -1,19 +1,19 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { SECURITY } from '../config/security.config';
-import { TooManyAttemptsException } from '../common/exceptions/too-many-attempts.exception';
-import { Role } from '../common/roles';
-import { rethrow } from '../common/utils/rethrow';
-import { securityLog } from '../common/utils/security-log';
-import { UserDocument } from '../users/schemas/user.schema';
-import { UsersRepository } from '../users/users.repository';
-import { UsersService } from '../users/users.service';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
-import { LoginGuardService } from './login-guard.service';
-import { Traced } from '../common/logging/traced.decorator';
+import { SECURITY } from '../config/security.config.js';
+import { TooManyAttemptsException } from '../common/exceptions/too-many-attempts.exception.js';
+import { Role } from '../common/roles.js';
+import { rethrow } from '../common/utils/rethrow.js';
+import { securityLog } from '../common/utils/security-log.js';
+import { UserDocument } from '../users/schemas/user.schema.js';
+import { UsersRepository } from '../users/users.repository.js';
+import { UsersService } from '../users/users.service.js';
+import { LoginDto } from './dto/login.dto.js';
+import { RegisterDto } from './dto/register.dto.js';
+import { UpdateProfileDto } from './dto/update-profile.dto.js';
+import { LoginGuardService } from './login-guard.service.js';
+import { Traced } from '../common/logging/traced.decorator.js';
 
 // Compared against when the email is unknown so response time does not reveal registered accounts.
 const DUMMY_HASH = bcrypt.hashSync('timing-equaliser-password', SECURITY.bcryptRounds);
@@ -21,6 +21,8 @@ const DUMMY_HASH = bcrypt.hashSync('timing-equaliser-password', SECURITY.bcryptR
 @Traced()
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly users: UsersService,
     private readonly usersRepo: UsersRepository,
@@ -62,9 +64,24 @@ export class AuthService {
       }
 
       await this.loginGuard.resetAccountFailures(user);
+      void this.rehashIfCostChanged(user, dto.password);
       return this.session(user);
     } catch (error) {
       rethrow(error, 'AuthService.login');
+    }
+  }
+
+  /**
+   * Re-hashes a password stored at a different bcrypt cost than the configured one. Runs after
+   * the response is sent, so it never slows the sign-in, and a failure only means it retries on
+   * the next sign-in.
+   */
+  async rehashIfCostChanged(user: Pick<UserDocument, '_id' | 'password'>, password: string): Promise<void> {
+    try {
+      if (!user?.password || bcrypt.getRounds(user.password) === SECURITY.bcryptRounds) return;
+      await this.usersRepo.replacePasswordHash(user._id, await bcrypt.hash(password, SECURITY.bcryptRounds));
+    } catch (error) {
+      this.logger.warn(`Password re-hash skipped for ${String(user?._id)}: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 

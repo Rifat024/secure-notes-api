@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, Length } from 'class-validator';
-import { Trim } from '../../common/dto/transforms';
+import { Trim } from '../../common/dto/transforms.js';
 
 export class CreatePostDto {
   @ApiProperty({ example: 'Opening theory' })

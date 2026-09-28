@@ -3,11 +3,11 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AppModule } from '../app.module';
-import { Role } from '../common/roles';
-import { Note } from '../notes/schemas/note.schema';
-import { Post } from '../posts/schemas/post.schema';
-import { hashPassword, User } from '../users/schemas/user.schema';
+import { AppModule } from '../app.module.js';
+import { Role } from '../common/roles.js';
+import { Note } from '../notes/schemas/note.schema.js';
+import { Post } from '../posts/schemas/post.schema.js';
+import { hashPassword, User } from '../users/schemas/user.schema.js';
 
 const logger = new Logger('Seed');
 

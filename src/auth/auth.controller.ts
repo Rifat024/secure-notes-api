@@ -1,20 +1,20 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post, Req } from '@nestjs/common';
-import { Throttle } from '@nestjs/throttler';
 import type { FastifyRequest } from 'fastify';
-import { SECURITY } from '../config/security.config';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { Public } from '../common/decorators/public.decorator';
-import { AuthUser } from '../common/roles';
-import { clientIp } from '../common/utils/client-ip';
-import { UsersService } from '../users/users.service';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
-import { rethrow } from '../common/utils/rethrow';
+import { SECURITY } from '../config/security.config.js';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import { Public } from '../common/decorators/public.decorator.js';
+import { RateLimit } from '../common/decorators/rate-limit.decorator.js';
+import { AuthUser } from '../common/roles.js';
+import { clientIp } from '../common/utils/client-ip.js';
+import { UsersService } from '../users/users.service.js';
+import { AuthService } from './auth.service.js';
+import { LoginDto } from './dto/login.dto.js';
+import { RegisterDto } from './dto/register.dto.js';
+import { UpdateProfileDto } from './dto/update-profile.dto.js';
+import { rethrow } from '../common/utils/rethrow.js';
 import { ApiBearerAuth, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ApiErrors } from '../common/decorators/api-errors.decorator';
-import { AuthResponse, ProfileUpdateResponse, UserResponse } from '../users/dto/user.response';
+import { ApiErrors } from '../common/decorators/api-errors.decorator.js';
+import { AuthResponse, ProfileUpdateResponse, UserResponse } from '../users/dto/user.response.js';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -28,7 +28,7 @@ export class AuthController {
   @ApiCreatedResponse({ type: AuthResponse })
   @ApiErrors(400, 409, 429)
   @Public()
-  @Throttle({ default: SECURITY.registerRateLimit })
+  @RateLimit(SECURITY.registerRateLimit)
   @Post('register')
   async register(@Body() dto: RegisterDto) {
     try {
@@ -46,7 +46,7 @@ export class AuthController {
   @ApiOkResponse({ type: AuthResponse })
   @ApiErrors(400, 401, 429)
   @Public()
-  @Throttle({ default: SECURITY.authRateLimit })
+  @RateLimit(SECURITY.authRateLimit)
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Body() dto: LoginDto, @Req() req: FastifyRequest) {

@@ -1,7 +1,8 @@
+import { jest } from '@jest/globals';
 import { ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from '../roles';
-import { RolesGuard } from './roles.guard';
+import { Role } from '../roles.js';
+import { RolesGuard } from './roles.guard.js';
 
 const contextFor = (user?: { role: Role }) =>
   ({

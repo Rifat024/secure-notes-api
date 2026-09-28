@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsMongoId, IsOptional, IsString, Length, MaxLength } from 'class-validator';
-import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
-import { Trim } from '../../common/dto/transforms';
+import { PaginationQueryDto } from '../../common/dto/pagination-query.dto.js';
+import { Trim } from '../../common/dto/transforms.js';
 
 export class CreateNoteDto {
   @ApiProperty({ example: 'Groceries' })

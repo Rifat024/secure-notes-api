@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import {
   BadRequestException,
   ConflictException,
@@ -7,10 +8,10 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { Error as MongooseError, mongo } from 'mongoose';
-import { rethrowDbError } from './db-error';
+import { rethrowDbError } from './db-error.js';
 
 describe('rethrowDbError', () => {
-  beforeEach(() => jest.spyOn(Logger.prototype, 'error').mockImplementation());
+  beforeEach(() => jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined));
   afterEach(() => jest.restoreAllMocks());
 
   const mapped = (error: unknown) => {

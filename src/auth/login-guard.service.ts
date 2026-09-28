@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { SECURITY } from '../config/security.config';
-import { TooManyAttemptsException } from '../common/exceptions/too-many-attempts.exception';
-import { rethrow } from '../common/utils/rethrow';
-import { securityLog } from '../common/utils/security-log';
-import { UsersRepository } from '../users/users.repository';
-import { LoginThrottleRepository } from './login-throttle.repository';
-import { Traced } from '../common/logging/traced.decorator';
+import { SECURITY } from '../config/security.config.js';
+import { TooManyAttemptsException } from '../common/exceptions/too-many-attempts.exception.js';
+import { rethrow } from '../common/utils/rethrow.js';
+import { securityLog } from '../common/utils/security-log.js';
+import { UsersRepository } from '../users/users.repository.js';
+import { LoginThrottleRepository } from './login-throttle.repository.js';
+import { Traced } from '../common/logging/traced.decorator.js';
 
 /**
  * Brute-force protection backed by MongoDB so it holds across serverless instances: an account

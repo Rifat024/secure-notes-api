@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppConfig } from '../config/app.config';
-import { SECURITY } from '../config/security.config';
-import { UsersModule } from '../users/users.module';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { LoginGuardService } from './login-guard.service';
-import { LoginThrottleRepository } from './login-throttle.repository';
-import { LoginThrottle, LoginThrottleSchema } from './schemas/login-throttle.schema';
+import { AppConfig } from '../config/app.config.js';
+import { SECURITY } from '../config/security.config.js';
+import { UsersModule } from '../users/users.module.js';
+import { AuthController } from './auth.controller.js';
+import { AuthService } from './auth.service.js';
+import { LoginGuardService } from './login-guard.service.js';
+import { LoginThrottleRepository } from './login-throttle.repository.js';
+import { LoginThrottle, LoginThrottleSchema } from './schemas/login-throttle.schema.js';
 
 @Module({
   imports: [

@@ -1,7 +1,11 @@
+import { jest } from '@jest/globals';
+
 import { NotFoundException } from '@nestjs/common';
-import { Role } from '../common/roles';
-import { NotesRepository } from './notes.repository';
-import { NotesService } from './notes.service';
+import { Role } from '../common/roles.js';
+import { NotesRepository } from './notes.repository.js';
+import { NotesService } from './notes.service.js';
+
+type AnyFn = (...args: any[]) => any;
 
 describe('NotesService', () => {
   const note = { _id: 'n1', title: 'T' };
@@ -10,10 +14,10 @@ describe('NotesService', () => {
 
   beforeEach(() => {
     repo = {
-      findById: jest.fn().mockResolvedValue(note),
-      findOwned: jest.fn().mockResolvedValue(null),
-      updateOwned: jest.fn().mockResolvedValue(null),
-      deleteOwned: jest.fn().mockResolvedValue(false),
+      findById: jest.fn<AnyFn>().mockResolvedValue(note),
+      findOwned: jest.fn<AnyFn>().mockResolvedValue(null),
+      updateOwned: jest.fn<AnyFn>().mockResolvedValue(null),
+      deleteOwned: jest.fn<AnyFn>().mockResolvedValue(false),
     } as unknown as jest.Mocked<NotesRepository>;
     service = new NotesService(repo);
   });

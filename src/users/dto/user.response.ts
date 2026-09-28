@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Role } from '../../common/roles';
+import { Role } from '../../common/roles.js';
 
 export class UserResponse {
   @ApiProperty({ example: '6aba8b02021c896f17997cfa' })

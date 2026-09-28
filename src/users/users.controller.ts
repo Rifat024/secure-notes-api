@@ -1,14 +1,14 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
-import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe';
-import { InterestQueryDto } from './dto/interest-query.dto';
-import { UsersService } from './users.service';
-import { rethrow } from '../common/utils/rethrow';
+import { PaginationQueryDto } from '../common/dto/pagination-query.dto.js';
+import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe.js';
+import { InterestQueryDto } from './dto/interest-query.dto.js';
+import { UsersService } from './users.service.js';
+import { rethrow } from '../common/utils/rethrow.js';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ApiErrors } from '../common/decorators/api-errors.decorator';
-import { Paginated } from '../common/dto/page.response';
-import { UserPostsResponse } from '../posts/dto/post.response';
-import { InterestGroupResponse, PublicProfileResponse } from './dto/user.response';
+import { ApiErrors } from '../common/decorators/api-errors.decorator.js';
+import { Paginated } from '../common/dto/page.response.js';
+import { UserPostsResponse } from '../posts/dto/post.response.js';
+import { InterestGroupResponse, PublicProfileResponse } from './dto/user.response.js';
 
 @ApiTags('Users & aggregations')
 @ApiBearerAuth('jwt')

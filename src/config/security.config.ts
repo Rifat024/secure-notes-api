@@ -8,7 +8,8 @@ const MINUTE = 60 * 1000;
 export const SECURITY = Object.freeze({
   jwtIssuer: 'secure-notes-api',
   jwtAudience: 'secure-notes-web',
-  bcryptRounds: 12,
+  /** bcrypt cost; below 10 is rejected. Lower costs trade hashing strength for sign-in latency. */
+  bcryptRounds: Math.min(14, Math.max(10, int('BCRYPT_ROUNDS', 12))),
 
   /** Failed sign-ins for one account before it is locked. */
   accountMaxFailures: int('ACCOUNT_MAX_FAILURES', 5),

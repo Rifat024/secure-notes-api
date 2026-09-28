@@ -1,5 +1,6 @@
+import { jest } from '@jest/globals';
 import { Logger, NotFoundException } from '@nestjs/common';
-import { Traced } from './traced.decorator';
+import { Traced } from './traced.decorator.js';
 
 @Traced()
 class Sample {
@@ -17,14 +18,14 @@ class Sample {
 }
 
 describe('@Traced', () => {
-  let verbose: jest.SpyInstance;
-  let debug: jest.SpyInstance;
-  let warn: jest.SpyInstance;
+  let verbose: ReturnType<typeof jest.spyOn>;
+  let debug: ReturnType<typeof jest.spyOn>;
+  let warn: ReturnType<typeof jest.spyOn>;
 
   beforeEach(() => {
-    verbose = jest.spyOn(Logger.prototype, 'verbose').mockImplementation();
-    debug = jest.spyOn(Logger.prototype, 'debug').mockImplementation();
-    warn = jest.spyOn(Logger.prototype, 'warn').mockImplementation();
+    verbose = jest.spyOn(Logger.prototype, 'verbose').mockImplementation(() => undefined);
+    debug = jest.spyOn(Logger.prototype, 'debug').mockImplementation(() => undefined);
+    warn = jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => undefined);
   });
   afterEach(() => jest.restoreAllMocks());
 

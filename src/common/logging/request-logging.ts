@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
 import type { FastifyInstance } from 'fastify';
-import { clientIp } from '../utils/client-ip';
+import { clientIp } from '../utils/client-ip.js';
 
 const logger = new Logger('HTTP');
 

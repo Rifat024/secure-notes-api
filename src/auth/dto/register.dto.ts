@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ArrayMaxSize, IsArray, IsEmail, IsOptional, IsString, Length, MaxLength } from 'class-validator';
-import { IsStrongPassword } from '../../common/dto/password';
-import { NormalizeTags, Trim, TrimLower } from '../../common/dto/transforms';
+import { IsStrongPassword } from '../../common/dto/password.js';
+import { NormalizeTags, Trim, TrimLower } from '../../common/dto/transforms.js';
 
 export class RegisterDto {
   @ApiProperty({ example: 'Ada Lovelace' })

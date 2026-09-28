@@ -1,6 +1,7 @@
+import { jest } from '@jest/globals';
 import { ArgumentsHost, BadRequestException, Logger, NotFoundException } from '@nestjs/common';
-import { TooManyAttemptsException } from '../exceptions/too-many-attempts.exception';
-import { AllExceptionsFilter } from './all-exceptions.filter';
+import { TooManyAttemptsException } from '../exceptions/too-many-attempts.exception.js';
+import { AllExceptionsFilter } from './all-exceptions.filter.js';
 
 function mockHost() {
   const reply = { statusCode: 0, body: undefined as unknown, headers: {} as Record<string, string> };
@@ -15,7 +16,7 @@ function mockHost() {
 
 describe('AllExceptionsFilter', () => {
   const filter = new AllExceptionsFilter();
-  beforeEach(() => jest.spyOn(Logger.prototype, 'error').mockImplementation());
+  beforeEach(() => jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined));
   afterEach(() => jest.restoreAllMocks());
 
   it('renders HTTP exceptions as { error }', () => {

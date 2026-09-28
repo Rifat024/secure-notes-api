@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { rethrowDbError } from '../common/database/db-error';
-import { PageQuery, paginateFind } from '../common/utils/pagination';
-import { userPostsPipeline, UserPostsOptions } from './pipelines/user-posts.pipeline';
-import { usersByInterestPipeline, UsersByInterestOptions } from './pipelines/users-by-interest.pipeline';
-import { User, UserDocument } from './schemas/user.schema';
-import { Traced } from '../common/logging/traced.decorator';
+import { rethrowDbError } from '../common/database/db-error.js';
+import { PageQuery, paginateFind } from '../common/utils/pagination.js';
+import { userPostsPipeline, UserPostsOptions } from './pipelines/user-posts.pipeline.js';
+import { usersByInterestPipeline, UsersByInterestOptions } from './pipelines/users-by-interest.pipeline.js';
+import { User, UserDocument } from './schemas/user.schema.js';
+import { Traced } from '../common/logging/traced.decorator.js';
 
 /**
  * Every query against the users collection. Lookups use _id or the unique { email: 1 } index;
@@ -115,12 +115,21 @@ export class UsersRepository {
               },
             },
           ],
-          { new: true, projection: { lockUntil: 1 } },
+          { new: true, projection: { lockUntil: 1 }, updatePipeline: true },
         )
         .lean()
         .exec();
     } catch (error) {
       rethrowDbError(error, 'UsersRepository.recordFailedLogin');
+    }
+  }
+
+  /** Stores an already-computed hash directly, bypassing the save hook that would hash it again. */
+  async replacePasswordHash(id: Types.ObjectId, hash: string): Promise<void> {
+    try {
+      await this.model.updateOne({ _id: id }, { $set: { password: hash } });
+    } catch (error) {
+      rethrowDbError(error, 'UsersRepository.replacePasswordHash');
     }
   }
 

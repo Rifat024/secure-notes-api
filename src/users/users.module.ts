@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { NotesModule } from '../notes/notes.module';
-import { PostsModule } from '../posts/posts.module';
-import { User, UserSchema } from './schemas/user.schema';
-import { UsersController } from './users.controller';
-import { UsersRepository } from './users.repository';
-import { UsersService } from './users.service';
+import { NotesModule } from '../notes/notes.module.js';
+import { PostsModule } from '../posts/posts.module.js';
+import { User, UserSchema } from './schemas/user.schema.js';
+import { UsersController } from './users.controller.js';
+import { UsersRepository } from './users.repository.js';
+import { UsersService } from './users.service.js';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), NotesModule, PostsModule],

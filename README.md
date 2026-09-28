@@ -2,9 +2,15 @@
 
 A REST API for a note-taking app, built with **NestJS on Fastify**. It covers JWT authentication, role-based access control, brute-force protection, and a deliberately minimal set of MongoDB indexes. Every list endpoint is paginated, and every read is served by an index.
 
-- **Stack:** NestJS 11 on Fastify 5, MongoDB with Mongoose 8, JWT (HS256), bcrypt (cost 12), class-validator DTOs, `@fastify/helmet`, `@nestjs/throttler`
+- **Stack:** NestJS 12 on Fastify 5 (native ES modules), MongoDB with Mongoose 9, JWT (HS256), bcrypt, class-validator DTOs, `@fastify/helmet`, TypeScript 7
 - **Frontend:** [secure-notes-web](https://github.com/Rifat024/secure-notes-web)
 - **API docs (Swagger):** [secure-notes-api-ebon.vercel.app/api/docs](https://secure-notes-api-ebon.vercel.app/api/docs); the raw OpenAPI spec is at `/api/docs-json`
+
+## Toolchain
+
+The package is native ESM (`"type": "module"`, `nodenext` resolution), because NestJS 12 ships only as ES modules. Relative imports therefore carry `.js` extensions, and the runtime never needs `require()` of an ES module, which some hosts (Vercel) disallow.
+
+TypeScript 7 type-checks the project (`npm run typecheck`). TypeScript 7.0 does not yet expose the compiler API that the Nest CLI, the Swagger plugin, ts-jest, and ts-node rely on, so `typescript` is aliased to `@typescript/typescript6` for those tools and TypeScript 7 is installed as `@typescript/native`. When TypeScript 7.1 restores the API, the alias can be dropped.
 
 ## Run locally
 
@@ -13,7 +19,8 @@ cp .env.example .env        # set MONGODB_URI and a random JWT_SECRET of 32+ cha
 npm install
 npm run seed                # admin, 6 users with interests, notes, posts
 npm run dev                 # http://localhost:4000 (watch mode)
-npm test                    # 97 tests: 63 unit + 34 integration on an in-memory MongoDB
+npm test                    # 102 tests: 68 unit + 34 integration on an in-memory MongoDB
+npm run typecheck           # TypeScript 7 type-check of the whole project
 npm run explain             # prints the winning query plan for every query and aggregation
 npm run e2e                 # end-to-end checks against a running API (API_URL=...)
 ```
@@ -29,13 +36,13 @@ src/
 ├── main.ts                     HTTP server entry
 ├── serverless.ts               Vercel entry (app built once per warm instance)
 ├── app.factory.ts              Fastify adapter, @fastify/helmet, CORS, JSON parser, global pipe
-├── app.module.ts               global guards (throttler → JWT → roles), filter, interceptor
+├── app.module.ts               global guards (rate limit → JWT → roles), filter, interceptor
 ├── config/                     env validation, app config, security constants
 ├── database/                   Mongoose connection + syncIndexes() on bootstrap
 ├── common/
 │   ├── swagger/                OpenAPI document, UI setup, docs-only CSP
 │   ├── decorators/             @Public, @Roles, @CurrentUser, @ApiErrors
-│   ├── guards/                 JwtAuthGuard, RolesGuard, AppThrottlerGuard
+│   ├── guards/                 JwtAuthGuard, RolesGuard, RateLimitGuard
 │   ├── filters/                AllExceptionsFilter → { error, details? }
 │   ├── pipes/                  ValidationPipe factory, ParseObjectIdPipe
 │   ├── dto/                    pagination DTO, password policy, transforms
@@ -189,11 +196,11 @@ $project { author, posts, total }
 
 | Layer | Protection |
 |---|---|
-| Passwords | bcrypt cost 12. The policy requires 8–72 characters with a letter and a number. The hash has `select: false` and is removed in `toJSON`. |
+| Passwords | bcrypt, cost 12 by default (`BCRYPT_ROUNDS`, never below 10). A stored hash at a different cost is re-hashed after the next successful sign-in. The policy requires 8–72 characters with a letter and a number. The hash has `select: false` and is removed in `toJSON`. |
 | Tokens | HS256 with the algorithm, issuer, and audience pinned; 8-hour expiry. A `tokenVersion` claim is checked on every request, so a logout, password change, or role change revokes all existing tokens. |
 | Account lockout | 5 wrong passwords lock the account for 15 minutes (429 with `Retry-After`). The counter is updated atomically in MongoDB. |
 | IP blocking | 10 failed sign-ins from one IP within 15 minutes block that IP from signing in for 30 minutes. The block is stored in MongoDB, so it holds across every serverless instance. |
-| Rate limiting | `@nestjs/throttler` allows 300 requests per 15 minutes per IP globally, 20 per 15 minutes for login, and 10 accounts per hour for registration. The limits are keyed on Vercel's edge IP header, which callers can't spoof. |
+| Rate limiting | `RateLimitGuard` (fixed windows per IP and route, in memory per instance; `@RateLimit()` / `@SkipRateLimit()`) allows 300 requests per 15 minutes per IP globally, 20 per 15 minutes for login, and 10 accounts per hour for registration. The limits are keyed on Vercel's edge IP header, which callers can't spoof. |
 | Enumeration | An unknown email is compared against a dummy hash and gets the same 401, so response timing doesn't reveal whether an account exists. |
 | Input | Whitelisted DTOs reject unknown fields and operator objects. The JSON parser uses `secure-json-parse` to block prototype poisoning. Request bodies are capped at 100 kb. |
 | Headers | `@fastify/helmet` sets a strict CSP (`default-src 'none'`), HSTS preload, `X-Frame-Options: DENY`, and `Referrer-Policy: no-referrer`. Every response carries `Cache-Control: no-store`. CORS is limited to an allowlist. |
@@ -216,7 +223,7 @@ Services and repositories are traced by the `@Traced()` class decorator, and con
 
 ## Deploy (Vercel)
 
-`npm run build` compiles to `dist/`. `api/index.js` exposes `dist/serverless.js`, which builds the Nest application once per warm instance and passes requests to Fastify.
+The function runs in Mumbai (`bom1`, set in `vercel.json`), next to the Atlas cluster, so each database round trip stays in-region. `npm run build` compiles to `dist/`. `api/index.js` exposes `dist/serverless.js`, which builds the Nest application once per warm instance and passes requests to Fastify.
 
 ```bash
 cp .env.production.example .env.production   # MONGODB_URI, CORS_ORIGIN, optional JWT_SECRET
@@ -242,6 +249,7 @@ The same code also runs on Render as a normal long-running Fastify server (`src/
 - **Start:** `npm start`
 - **Health check:** `/api/health`
 - **Region:** Singapore (close to the Mumbai Atlas cluster), free plan
+- **Password hashing:** `BCRYPT_ROUNDS=10`, because the free instance has only a fraction of a CPU (sign-in drops from ~2.4 s to ~0.6 s)
 
 Set `MONGODB_URI` in the Render dashboard. `JWT_SECRET` is generated for you. `CLIENT_IP_HEADER` names the header Render's edge sets with the real client IP, so rate limits and IP blocking see individual visitors rather than the proxy.
 

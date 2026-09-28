@@ -1,4 +1,4 @@
-import { Paginated } from '../../common/dto/page.response';
+import { Paginated } from '../../common/dto/page.response.js';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class PostAuthor {

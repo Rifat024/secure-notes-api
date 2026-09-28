@@ -1,5 +1,5 @@
-import type { FilterQuery, Model, PopulateOptions, ProjectionType, SortOrder } from 'mongoose';
-import { rethrowDbError } from '../database/db-error';
+import type { QueryFilter, Model, PopulateOptions, ProjectionType, SortOrder } from 'mongoose';
+import { rethrowDbError } from '../database/db-error.js';
 
 export const DEFAULT_LIMIT = 10;
 export const MAX_LIMIT = 100;
@@ -49,7 +49,7 @@ interface PaginateOptions {
  */
 export async function paginateFind<T>(
   model: Model<T>,
-  filter: FilterQuery<T>,
+  filter: QueryFilter<T>,
   query: PageQuery,
   { sort = { _id: -1 }, projection, populate }: PaginateOptions = {},
 ): Promise<Page<unknown>> {

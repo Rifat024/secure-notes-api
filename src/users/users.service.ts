@@ -1,15 +1,15 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { AuthUser, Role } from '../common/roles';
-import { buildPage, PageQuery, parsePagination } from '../common/utils/pagination';
-import { compact } from '../common/utils/compact';
-import { rethrow } from '../common/utils/rethrow';
-import { NotesRepository } from '../notes/notes.repository';
-import { PostsRepository } from '../posts/posts.repository';
-import { AdminCreateUserDto, AdminUpdateUserDto } from './dto/admin-user.dto';
-import { UserDocument } from './schemas/user.schema';
-import { UsersRepository } from './users.repository';
-import { Traced } from '../common/logging/traced.decorator';
+import { AuthUser, Role } from '../common/roles.js';
+import { buildPage, PageQuery, parsePagination } from '../common/utils/pagination.js';
+import { compact } from '../common/utils/compact.js';
+import { rethrow } from '../common/utils/rethrow.js';
+import { NotesRepository } from '../notes/notes.repository.js';
+import { PostsRepository } from '../posts/posts.repository.js';
+import { AdminCreateUserDto, AdminUpdateUserDto } from './dto/admin-user.dto.js';
+import { UserDocument } from './schemas/user.schema.js';
+import { UsersRepository } from './users.repository.js';
+import { Traced } from '../common/logging/traced.decorator.js';
 
 interface ProfileChanges {
   name?: string;
