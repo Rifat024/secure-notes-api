@@ -1,9 +1,9 @@
 import * as bcrypt from 'bcryptjs';
 import { model } from 'mongoose';
-import { Role } from '../../common/roles.js';
-import { NoteSchema } from '../../notes/schemas/note.schema.js';
-import { PostSchema } from '../../posts/schemas/post.schema.js';
-import { hashPassword, User, UserSchema } from './user.schema.js';
+import { Role } from '../../../../src/common/roles.js';
+import { NoteSchema } from '../../../../src/notes/schemas/note.schema.js';
+import { PostSchema } from '../../../../src/posts/schemas/post.schema.js';
+import { hashPassword, User, UserSchema } from '../../../../src/users/schemas/user.schema.js';
 
 const UserModel = model(User.name, UserSchema);
 

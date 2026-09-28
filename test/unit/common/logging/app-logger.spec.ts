@@ -1,4 +1,4 @@
-import { resolveLogLevels } from './app-logger.js';
+import { resolveLogLevels } from '../../../../src/common/logging/app-logger.js';
 
 describe('resolveLogLevels', () => {
   it('enables the chosen level and every more severe one', () => {

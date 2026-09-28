@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 
 import { NotFoundException } from '@nestjs/common';
-import { Role } from '../common/roles.js';
-import { NotesRepository } from './notes.repository.js';
-import { NotesService } from './notes.service.js';
+import { Role } from '../../../src/common/roles.js';
+import { NotesRepository } from '../../../src/notes/notes.repository.js';
+import { NotesService } from '../../../src/notes/notes.service.js';
 
 type AnyFn = (...args: any[]) => any;
 

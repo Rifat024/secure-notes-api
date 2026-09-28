@@ -8,7 +8,7 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { Error as MongooseError, mongo } from 'mongoose';
-import { rethrowDbError } from './db-error.js';
+import { rethrowDbError } from '../../../../src/common/database/db-error.js';
 
 describe('rethrowDbError', () => {
   beforeEach(() => jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined));

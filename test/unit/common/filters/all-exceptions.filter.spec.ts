@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { ArgumentsHost, BadRequestException, Logger, NotFoundException } from '@nestjs/common';
-import { TooManyAttemptsException } from '../exceptions/too-many-attempts.exception.js';
-import { AllExceptionsFilter } from './all-exceptions.filter.js';
+import { TooManyAttemptsException } from '../../../../src/common/exceptions/too-many-attempts.exception.js';
+import { AllExceptionsFilter } from '../../../../src/common/filters/all-exceptions.filter.js';
 
 function mockHost() {
   const reply = { statusCode: 0, body: undefined as unknown, headers: {} as Record<string, string> };

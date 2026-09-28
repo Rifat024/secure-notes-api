@@ -4,9 +4,9 @@ import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Types } from 'mongoose';
-import { SECURITY } from '../../config/security.config.js';
-import { UsersRepository } from '../../users/users.repository.js';
-import { JwtAuthGuard } from './jwt-auth.guard.js';
+import { SECURITY } from '../../../../src/config/security.config.js';
+import { UsersRepository } from '../../../../src/users/users.repository.js';
+import { JwtAuthGuard } from '../../../../src/common/guards/jwt-auth.guard.js';
 
 type AnyFn = (...args: any[]) => any;
 

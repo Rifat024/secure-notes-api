@@ -27,7 +27,7 @@
         "testEnvironment": "node",
         "rootDir": ".",
         "testMatch": [
-          "<rootDir>/src/**/*.spec.ts"
+          "<rootDir>/test/unit/**/*.spec.ts"
         ],
         "setupFiles": [
           "<rootDir>/test/setup-logger.ts"
@@ -53,7 +53,7 @@
         "testEnvironment": "node",
         "rootDir": ".",
         "testMatch": [
-          "<rootDir>/test/**/*.e2e-spec.ts"
+          "<rootDir>/test/integration/**/*.e2e-spec.ts"
         ],
         "setupFiles": [
           "<rootDir>/test/setup-env.ts",

@@ -2,11 +2,11 @@ import { jest } from '@jest/globals';
 
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { Role } from '../common/roles.js';
-import { NotesRepository } from '../notes/notes.repository.js';
-import { PostsRepository } from '../posts/posts.repository.js';
-import { UsersRepository } from './users.repository.js';
-import { UsersService } from './users.service.js';
+import { Role } from '../../../src/common/roles.js';
+import { NotesRepository } from '../../../src/notes/notes.repository.js';
+import { PostsRepository } from '../../../src/posts/posts.repository.js';
+import { UsersRepository } from '../../../src/users/users.repository.js';
+import { UsersService } from '../../../src/users/users.service.js';
 
 type AnyFn = (...args: any[]) => any;
 

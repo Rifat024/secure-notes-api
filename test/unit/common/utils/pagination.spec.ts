@@ -1,4 +1,4 @@
-import { buildPage, DEFAULT_LIMIT, MAX_LIMIT, parsePagination } from './pagination.js';
+import { buildPage, DEFAULT_LIMIT, MAX_LIMIT, parsePagination } from '../../../../src/common/utils/pagination.js';
 
 describe('parsePagination', () => {
   it('defaults to the first page', () => {

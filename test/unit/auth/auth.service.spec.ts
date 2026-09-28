@@ -4,12 +4,12 @@ import * as bcrypt from 'bcryptjs';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Types } from 'mongoose';
-import { TooManyAttemptsException } from '../common/exceptions/too-many-attempts.exception.js';
-import { hashPassword } from '../users/schemas/user.schema.js';
-import { UsersRepository } from '../users/users.repository.js';
-import { UsersService } from '../users/users.service.js';
-import { AuthService } from './auth.service.js';
-import { LoginGuardService } from './login-guard.service.js';
+import { TooManyAttemptsException } from '../../../src/common/exceptions/too-many-attempts.exception.js';
+import { hashPassword } from '../../../src/users/schemas/user.schema.js';
+import { UsersRepository } from '../../../src/users/users.repository.js';
+import { UsersService } from '../../../src/users/users.service.js';
+import { AuthService } from '../../../src/auth/auth.service.js';
+import { LoginGuardService } from '../../../src/auth/login-guard.service.js';
 
 type AnyFn = (...args: any[]) => any;
 

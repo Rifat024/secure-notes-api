@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { Logger, NotFoundException } from '@nestjs/common';
-import { Traced } from './traced.decorator.js';
+import { Traced } from '../../../../src/common/logging/traced.decorator.js';
 
 @Traced()
 class Sample {

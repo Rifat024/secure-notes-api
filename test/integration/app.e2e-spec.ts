@@ -5,12 +5,12 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Model } from 'mongoose';
 import request from 'supertest';
 import type TestAgent from 'supertest/lib/agent.js';
-import { createApp } from '../src/app.factory.js';
-import { LoginThrottle } from '../src/auth/schemas/login-throttle.schema.js';
-import { Role } from '../src/common/roles.js';
-import { Note } from '../src/notes/schemas/note.schema.js';
-import { Post } from '../src/posts/schemas/post.schema.js';
-import { User } from '../src/users/schemas/user.schema.js';
+import { createApp } from '../../src/app.factory.js';
+import { LoginThrottle } from '../../src/auth/schemas/login-throttle.schema.js';
+import { Role } from '../../src/common/roles.js';
+import { Note } from '../../src/notes/schemas/note.schema.js';
+import { Post } from '../../src/posts/schemas/post.schema.js';
+import { User } from '../../src/users/schemas/user.schema.js';
 
 jest.setTimeout(120_000);
 

@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
-import { userPostsPipeline } from './user-posts.pipeline.js';
-import { usersByInterestPipeline } from './users-by-interest.pipeline.js';
+import { userPostsPipeline } from '../../../../src/users/pipelines/user-posts.pipeline.js';
+import { usersByInterestPipeline } from '../../../../src/users/pipelines/users-by-interest.pipeline.js';
 
 const stageNames = (pipeline: object[]) => pipeline.map((stage) => Object.keys(stage)[0]);
 

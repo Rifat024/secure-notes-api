@@ -56,7 +56,9 @@ src/
 ├── admin/                      admin users + admin notes controllers
 ├── health/
 └── cli/                        seed.ts, explain.ts (standalone Nest contexts)
-test/app.e2e-spec.ts            integration suite (real Fastify app + in-memory MongoDB, docs included)
+test/
+├── unit/                       unit specs, mirroring the src/ folders
+└── integration/                API suite (real Fastify app + in-memory MongoDB, docs included)
 scripts/                        deploy.sh, e2e.js
 ```
 
