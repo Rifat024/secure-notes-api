@@ -197,7 +197,7 @@ $project { author, posts, total }
 | Enumeration | An unknown email is compared against a dummy hash and gets the same 401, so response timing doesn't reveal whether an account exists. |
 | Input | Whitelisted DTOs reject unknown fields and operator objects. The JSON parser uses `secure-json-parse` to block prototype poisoning. Request bodies are capped at 100 kb. |
 | Headers | `@fastify/helmet` sets a strict CSP (`default-src 'none'`), HSTS preload, `X-Frame-Options: DENY`, and `Referrer-Policy: no-referrer`. Every response carries `Cache-Control: no-store`. CORS is limited to an allowlist. |
-| Proxies | `X-Forwarded-For` is honoured only from `TRUST_PROXY` addresses. Fastify is pinned to a version that fixes the hop-count spoofing advisory (GHSA-3m5p-2c4r-xxw2). |
+| Proxies | The client IP comes from the platform's edge header (`x-vercel-forwarded-for` on Vercel, `CLIENT_IP_HEADER` elsewhere); otherwise `X-Forwarded-For` is honoured only from `TRUST_PROXY` addresses. Fastify is pinned to a version that fixes the hop-count spoofing advisory (GHSA-3m5p-2c4r-xxw2). |
 | Errors | Stack traces are never sent to clients. Database errors are mapped to safe HTTP statuses. |
 
 ## Logging
@@ -233,3 +233,16 @@ npm run deploy                                # add "-- --seed" to load the demo
 6. Smoke-tests the live API.
 
 MongoDB Atlas **Network Access** must allow `0.0.0.0/0`, because Vercel functions don't use fixed IP addresses.
+
+## Deploy (Render)
+
+The same code also runs on Render as a normal long-running Fastify server (`src/main.ts`), with no serverless wrapper. [`render.yaml`](render.yaml) describes the service:
+
+- **Build:** `npm ci --include=dev && npm run build`
+- **Start:** `npm start`
+- **Health check:** `/api/health`
+- **Region:** Singapore (close to the Mumbai Atlas cluster), free plan
+
+Set `MONGODB_URI` in the Render dashboard. `JWT_SECRET` is generated for you. `CLIENT_IP_HEADER` names the header Render's edge sets with the real client IP, so rate limits and IP blocking see individual visitors rather than the proxy.
+
+On the free plan the service sleeps after 15 minutes without traffic, so the first request after that takes 30–60 seconds.

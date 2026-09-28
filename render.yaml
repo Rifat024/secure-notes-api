@@ -1,0 +1,25 @@
+# Render Blueprint: runs the API as a long-running Fastify server (src/main.ts).
+services:
+  - type: web
+    name: secure-notes-api
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: log
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://secure-notes-web.vercel.app
+      - key: CLIENT_IP_HEADER
+        sync: false
