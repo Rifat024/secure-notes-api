@@ -6,7 +6,7 @@
   "outputDirectory": "public",
   "functions": {
     "api/index.js": {
-      "includeFiles": "{dist/**,node_modules/swagger-ui-dist/**}",
+      "includeFiles": "node_modules/swagger-ui-dist/**",
       "maxDuration": 15
     }
   },

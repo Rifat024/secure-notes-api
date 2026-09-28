@@ -1,3 +1,6 @@
+// Nest loads @fastify/static lazily to serve the Swagger UI assets; importing it here makes
+// serverless bundlers (Vercel's file tracer) ship it with the function.
+import '@fastify/static';
 import { Logger } from '@nestjs/common';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
