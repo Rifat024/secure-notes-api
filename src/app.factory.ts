@@ -30,7 +30,11 @@ async function buildApp(): Promise<NestFastifyApplication> {
 
   await app.register(helmet, {
     global: true,
-    contentSecurityPolicy: { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"], baseUri: ["'none'"], formAction: ["'none'"] } },
+    // A JSON API serves no documents, so helmet's page-oriented CSP defaults are not merged in.
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"], baseUri: ["'none'"], formAction: ["'none'"] },
+    },
     strictTransportSecurity: { maxAge: 63072000, includeSubDomains: true, preload: true },
     referrerPolicy: { policy: 'no-referrer' },
     crossOriginResourcePolicy: { policy: 'cross-origin' },

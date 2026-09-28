@@ -314,7 +314,7 @@ describe('session security', () => {
   it('responses are not cacheable and carry strict security headers', async () => {
     const res = await api.get('/api/health').expect(200);
     expect(res.headers['cache-control']).toBe('no-store');
-    expect(res.headers['content-security-policy']).toContain("default-src 'none'");
+    expect(res.headers['content-security-policy']).toBe("default-src 'none';frame-ancestors 'none';base-uri 'none';form-action 'none'");
     expect(res.headers['strict-transport-security']).toContain('max-age=63072000');
     expect(res.headers['x-frame-options']).toBe('DENY');
     expect(res.headers['x-powered-by']).toBeUndefined();
