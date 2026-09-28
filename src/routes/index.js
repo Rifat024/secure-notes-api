@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import rateLimit from 'express-rate-limit';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
+import { apiLimiter, authLimiter, registerLimiter } from '../middleware/rateLimits.js';
 import { asyncHandler as h } from '../utils/asyncHandler.js';
 import * as v from '../utils/validation.js';
 import * as auth from '../controllers/authController.js';
@@ -12,25 +12,19 @@ import * as admin from '../controllers/adminController.js';
 
 const router = Router();
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 20,
-  standardHeaders: 'draft-7',
-  legacyHeaders: false,
-  skip: () => process.env.NODE_ENV === 'test',
-  message: { error: 'Too many attempts, please try again later' },
-});
-
 const page = { query: v.paginationQuery };
 const byId = { params: v.idParams };
 
 router.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
-router.post('/auth/register', authLimiter, validate({ body: v.registerBody }), h(auth.register));
+router.use(apiLimiter);
+
+router.post('/auth/register', registerLimiter, validate({ body: v.registerBody }), h(auth.register));
 router.post('/auth/login', authLimiter, validate({ body: v.loginBody }), h(auth.login));
 
 router.use(authenticate);
 
+router.post('/auth/logout', h(auth.logout));
 router.get('/auth/me', h(auth.me));
 router.patch('/auth/me', validate({ body: v.updateProfileBody }), h(auth.updateMe));
 

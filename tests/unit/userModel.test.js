@@ -14,9 +14,12 @@ describe('User model', () => {
     expect(await user.comparePassword('wrong')).toBe(false);
   });
 
-  test('toJSON never exposes the password', () => {
-    const user = new User({ name: 'A', email: 'a@example.com', password: 'secret-hash' });
-    expect(user.toJSON()).not.toHaveProperty('password');
+  test('toJSON never exposes the password or security counters', () => {
+    const user = new User({ name: 'A', email: 'a@example.com', password: 'secret-hash', failedLoginAttempts: 2, lockUntil: new Date(), tokenVersion: 3 });
+    const json = user.toJSON();
+    for (const field of ['password', 'failedLoginAttempts', 'lockUntil', 'tokenVersion']) {
+      expect(json).not.toHaveProperty(field);
+    }
   });
 
   test('defaults to the user role and normalises email and interests', () => {

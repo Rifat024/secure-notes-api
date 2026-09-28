@@ -3,6 +3,7 @@ import { startTestServer, stopTestServer, registerUser, createAdmin, bearer } fr
 import { User } from '../../src/models/User.js';
 import { Note } from '../../src/models/Note.js';
 import { Post } from '../../src/models/Post.js';
+import { LoginThrottle } from '../../src/models/LoginThrottle.js';
 
 jest.setTimeout(120000);
 
@@ -233,10 +234,85 @@ describe('aggregations', () => {
   test('user profile and self-service update', async () => {
     const me = await registerUser(api, { name: 'Profile' });
     const updated = await api.patch('/api/auth/me').set(bearer(me.token)).send({ interests: ['Coding', 'coding', 'music'] }).expect(200);
-    expect(updated.body.interests).toEqual(['coding', 'music']);
+    expect(updated.body.user.interests).toEqual(['coding', 'music']);
     const profile = await api.get(`/api/users/${me.user._id}`).set(bearer(me.token)).expect(200);
     expect(profile.body).toMatchObject({ name: 'Profile', interests: ['coding', 'music'] });
     expect(profile.body.email).toBeUndefined();
     await api.patch('/api/auth/me').set(bearer(me.token)).send({ role: 'admin' }).expect(400);
+  });
+});
+
+describe('session security', () => {
+  test('logout revokes every token issued before it', async () => {
+    const { token, user, password } = await registerUser(api);
+    const second = await api.post('/api/auth/login').send({ email: user.email, password }).expect(200);
+    await api.post('/api/auth/logout').set(bearer(token)).expect(204);
+    await api.get('/api/auth/me').set(bearer(token)).expect(401);
+    await api.get('/api/auth/me').set(bearer(second.body.token)).expect(401);
+  });
+
+  test('changing the password signs out other sessions and returns a fresh token', async () => {
+    const { token } = await registerUser(api);
+    const res = await api.patch('/api/auth/me').set(bearer(token)).send({ password: 'NewPassword456' }).expect(200);
+    expect(res.body.token).toEqual(expect.any(String));
+    await api.get('/api/auth/me').set(bearer(token)).expect(401);
+    await api.get('/api/auth/me').set(bearer(res.body.token)).expect(200);
+  });
+
+  test('an admin changing a role revokes that user\'s sessions', async () => {
+    const admin = await createAdmin(api);
+    const target = await registerUser(api);
+    await api.patch(`/api/admin/users/${target.user._id}`).set(bearer(admin.token)).send({ role: 'admin' }).expect(200);
+    await api.get('/api/auth/me').set(bearer(target.token)).expect(401);
+  });
+
+  test('weak passwords are rejected', async () => {
+    await api.post('/api/auth/register').send({ name: 'W', email: 'weak@example.com', password: 'onlyletters' }).expect(400);
+    await api.post('/api/auth/register').send({ name: 'W', email: 'weak@example.com', password: '12345678' }).expect(400);
+  });
+
+  test('responses are not cacheable and carry strict security headers', async () => {
+    const res = await api.get('/api/health').expect(200);
+    expect(res.headers['cache-control']).toBe('no-store');
+    expect(res.headers['content-security-policy']).toContain("default-src 'none'");
+    expect(res.headers['x-powered-by']).toBeUndefined();
+  });
+});
+
+describe('brute-force protection', () => {
+  const fromIp = (req, ip) => req.set('X-Forwarded-For', ip);
+
+  afterEach(() => LoginThrottle.deleteMany({}));
+
+  test('locks an account after 5 failed passwords, even with the right password', async () => {
+    const { user, password } = await registerUser(api);
+    for (let i = 0; i < 5; i += 1) {
+      await fromIp(api.post('/api/auth/login'), `198.51.100.${i + 1}`).send({ email: user.email, password: 'WrongPass999' }).expect(401);
+    }
+    const locked = await fromIp(api.post('/api/auth/login'), '198.51.100.50').send({ email: user.email, password }).expect(429);
+    expect(Number(locked.headers['retry-after'])).toBeGreaterThan(0);
+    expect(locked.body.error).toMatch(/Too many failed sign-in attempts/);
+  });
+
+  test('a successful login resets the account failure count', async () => {
+    const { user, password } = await registerUser(api);
+    for (let i = 0; i < 4; i += 1) {
+      await fromIp(api.post('/api/auth/login'), '198.51.100.60').send({ email: user.email, password: 'WrongPass999' }).expect(401);
+    }
+    await fromIp(api.post('/api/auth/login'), '198.51.100.61').send({ email: user.email, password }).expect(200);
+    await fromIp(api.post('/api/auth/login'), '198.51.100.62').send({ email: user.email, password: 'WrongPass999' }).expect(401);
+    await fromIp(api.post('/api/auth/login'), '198.51.100.63').send({ email: user.email, password }).expect(200);
+    const stored = await User.findById(user._id).select('+failedLoginAttempts +lockUntil').lean();
+    expect(stored.failedLoginAttempts).toBe(0);
+  });
+
+  test('blocks an IP after 10 failed sign-ins across any accounts', async () => {
+    const { user, password } = await registerUser(api);
+    for (let i = 0; i < 10; i += 1) {
+      await fromIp(api.post('/api/auth/login'), '203.0.113.7').send({ email: `nobody${i}@example.com`, password: 'WrongPass999' }).expect(401);
+    }
+    const blocked = await fromIp(api.post('/api/auth/login'), '203.0.113.7').send({ email: user.email, password }).expect(429);
+    expect(Number(blocked.headers['retry-after'])).toBeGreaterThan(1500);
+    await fromIp(api.post('/api/auth/login'), '203.0.113.8').send({ email: user.email, password }).expect(200);
   });
 });

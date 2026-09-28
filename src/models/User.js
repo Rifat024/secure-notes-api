@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema(
       type: [{ type: String, trim: true, lowercase: true, maxlength: 40 }],
       default: [],
     },
+    failedLoginAttempts: { type: Number, default: 0, select: false },
+    lockUntil: { type: Date, select: false },
+    // Incremented to revoke every token issued before it (logout, password or role change).
+    tokenVersion: { type: Number, default: 0, select: false },
   },
   { timestamps: true, versionKey: false },
 );
@@ -34,6 +38,9 @@ userSchema.methods.comparePassword = function comparePassword(candidate) {
 userSchema.set('toJSON', {
   transform: (_doc, ret) => {
     delete ret.password;
+    delete ret.failedLoginAttempts;
+    delete ret.lockUntil;
+    delete ret.tokenVersion;
     return ret;
   },
 });

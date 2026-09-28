@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { User } from '../models/User.js';
 import { Note } from '../models/Note.js';
 import { Post } from '../models/Post.js';
+import { LoginThrottle } from '../models/LoginThrottle.js';
 
 mongoose.set('strictQuery', true);
 
@@ -13,7 +14,7 @@ export async function connectDB(uri) {
     .connect(uri, { serverSelectionTimeoutMS: 10000, autoIndex: false })
     .then(async (conn) => {
       // syncIndexes drops indexes that are no longer declared, keeping the database aligned with schema.index().
-      await Promise.all([User.syncIndexes(), Note.syncIndexes(), Post.syncIndexes()]);
+      await Promise.all([User.syncIndexes(), Note.syncIndexes(), Post.syncIndexes(), LoginThrottle.syncIndexes()]);
       return conn;
     })
     .catch((err) => {

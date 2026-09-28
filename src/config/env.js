@@ -13,7 +13,7 @@ export const env = {
   port: Number(process.env.PORT ?? 4000),
   mongoUri: isTest ? process.env.MONGODB_URI ?? '' : required('MONGODB_URI'),
   jwtSecret: required('JWT_SECRET', isTest ? 'test-secret-test-secret-test-secret' : undefined),
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '1d',
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '8h',
   corsOrigins: (process.env.CORS_ORIGIN ?? 'http://localhost:5173')
     .split(',')
     .map((origin) => origin.trim())

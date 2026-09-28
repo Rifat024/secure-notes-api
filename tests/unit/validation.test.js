@@ -30,8 +30,8 @@ describe('registerBody', () => {
     expect(parsed.interests).toEqual(['chess', 'reading']);
   });
 
-  test('rejects short passwords', () => {
-    expect(registerBody.safeParse({ ...base, password: 'short' }).success).toBe(false);
+  test.each(['short1', 'onlyletters', '1234567890'])('rejects weak password %s', (password) => {
+    expect(registerBody.safeParse({ ...base, password }).success).toBe(false);
   });
 
   test('rejects unknown keys such as role, blocking privilege escalation', () => {

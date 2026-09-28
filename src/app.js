@@ -10,16 +10,26 @@ export function createApp({ beforeRoutes } = {}) {
 
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"] } },
+      referrerPolicy: { policy: 'no-referrer' },
+    }),
+  );
   app.use(
     cors({
       origin: (origin, callback) => callback(null, !origin || env.corsOrigins.includes(origin)),
       methods: ['GET', 'POST', 'PATCH', 'DELETE'],
       allowedHeaders: ['Content-Type', 'Authorization'],
+      exposedHeaders: ['Retry-After', 'RateLimit', 'RateLimit-Policy'],
       maxAge: 600,
     }),
   );
   app.use(express.json({ limit: '100kb' }));
+  app.use((_req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    next();
+  });
 
   if (beforeRoutes) app.use(beforeRoutes);
 

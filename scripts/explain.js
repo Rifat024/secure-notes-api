@@ -5,7 +5,10 @@ import { Note } from '../src/models/Note.js';
 import { Post } from '../src/models/Post.js';
 import { usersByInterestPipeline, userPostsPipeline } from '../src/services/aggregations.js';
 
-await connectDB(env.mongoUri);
+// Aggregation explain is rejected by the driver when the connection carries a write concern.
+const explainUri = new URL(env.mongoUri);
+explainUri.searchParams.delete('w');
+await connectDB(explainUri.toString());
 
 const user = await User.findOne({ role: 'user', 'interests.0': { $exists: true } }).lean();
 const note = await Note.findOne({ owner: user._id }).lean();

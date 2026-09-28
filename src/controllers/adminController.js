@@ -25,9 +25,12 @@ export async function updateUser(req, res) {
   if (id === req.user.id && req.valid.body.role && req.valid.body.role !== req.user.role) {
     throw new HttpError(400, 'Admins cannot change their own role');
   }
-  const user = await User.findById(id);
+  const user = await User.findById(id).select('+tokenVersion');
   if (!user) throw notFound('User');
+  const { password, role } = req.valid.body;
+  const revokeSessions = Boolean(password) || (role !== undefined && role !== user.role);
   Object.assign(user, req.valid.body);
+  if (revokeSessions) user.tokenVersion += 1;
   await user.save();
   res.json(user.toJSON());
 }

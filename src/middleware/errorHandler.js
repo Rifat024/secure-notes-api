@@ -6,6 +6,7 @@ export const notFoundHandler = (req, _res, next) => next(new HttpError(404, `Rou
 // eslint-disable-next-line no-unused-vars
 export function errorHandler(err, _req, res, _next) {
   if (err instanceof HttpError) {
+    if (err.headers) res.set(err.headers);
     return res.status(err.status).json({ error: err.message, ...(err.details && { details: err.details }) });
   }
   if (err?.code === 11000) {

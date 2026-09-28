@@ -15,7 +15,8 @@
     "test": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "deploy": "bash scripts/deploy.sh",
     "test:unit": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand tests/unit",
-    "test:integration": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand tests/integration"
+    "test:integration": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand tests/integration",
+    "e2e": "node scripts/e2e.js"
   },
   "jest": {
     "testEnvironment": "node",

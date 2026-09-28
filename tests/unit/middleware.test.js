@@ -19,8 +19,8 @@ describe('signToken', () => {
   test('issues an HS256 token carrying the user id and role', () => {
     const id = new mongoose.Types.ObjectId();
     const token = signToken({ _id: id, role: 'admin' });
-    const decoded = jwt.verify(token, env.jwtSecret, { algorithms: ['HS256'] });
-    expect(decoded).toMatchObject({ sub: id.toString(), role: 'admin' });
+    const decoded = jwt.verify(token, env.jwtSecret, { algorithms: ['HS256'], issuer: 'secure-notes-api', audience: 'secure-notes-web' });
+    expect(decoded).toMatchObject({ sub: id.toString(), role: 'admin', tv: 0 });
     expect(jwt.decode(token, { complete: true }).header.alg).toBe('HS256');
     expect(decoded.exp).toBeGreaterThan(decoded.iat);
   });

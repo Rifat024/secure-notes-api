@@ -9,7 +9,12 @@ export const objectId = z
 export const idParams = z.object({ id: objectId });
 
 const email = z.string().trim().toLowerCase().email().max(254);
-const password = z.string().min(8, 'Password must be at least 8 characters').max(72);
+const password = z
+  .string()
+  .min(8, 'Password must be at least 8 characters')
+  .max(72, 'Password must be at most 72 characters')
+  .regex(/[A-Za-z]/, 'Password must contain a letter')
+  .regex(/\d/, 'Password must contain a number');
 const name = z.string().trim().min(1).max(80);
 const interests = z
   .array(z.string().trim().toLowerCase().min(1).max(40))
