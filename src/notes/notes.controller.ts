@@ -6,11 +6,21 @@ import { AuthUser } from '../common/roles';
 import { CreateNoteDto, UpdateNoteDto } from './dto/note.dto';
 import { NotesService } from './notes.service';
 import { rethrow } from '../common/utils/rethrow';
+import { ApiBearerAuth, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiErrors } from '../common/decorators/api-errors.decorator';
+import { Paginated } from '../common/dto/page.response';
+import { NoteResponse } from './dto/note.response';
 
+@ApiTags('Notes')
+@ApiBearerAuth('jwt')
+@ApiErrors(401, 429)
 @Controller('notes')
 export class NotesController {
   constructor(private readonly notes: NotesService) {}
 
+  @ApiOperation({ summary: "List the caller's notes", description: 'Newest first. Served by the { owner: 1, _id: -1 } index.' })
+  @ApiOkResponse({ type: Paginated(NoteResponse) })
+  @ApiErrors(400)
   @Get()
   async list(@CurrentUser() user: AuthUser, @Query() query: PaginationQueryDto) {
     try {
@@ -20,6 +30,9 @@ export class NotesController {
     }
   }
 
+  @ApiOperation({ summary: 'Create a note', description: 'The owner is always the caller.' })
+  @ApiCreatedResponse({ type: NoteResponse })
+  @ApiErrors(400)
   @Post()
   async create(@CurrentUser() user: AuthUser, @Body() dto: CreateNoteDto) {
     try {
@@ -29,6 +42,9 @@ export class NotesController {
     }
   }
 
+  @ApiOperation({ summary: 'Get a note', description: 'Users can read their own notes; admins can read any note.' })
+  @ApiOkResponse({ type: NoteResponse })
+  @ApiErrors(400, 404)
   @Get(':id')
   async findOne(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string) {
     try {
@@ -38,6 +54,9 @@ export class NotesController {
     }
   }
 
+  @ApiOperation({ summary: 'Update own note' })
+  @ApiOkResponse({ type: NoteResponse })
+  @ApiErrors(400, 404)
   @Patch(':id')
   async update(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string, @Body() dto: UpdateNoteDto) {
     try {
@@ -47,6 +66,9 @@ export class NotesController {
     }
   }
 
+  @ApiOperation({ summary: 'Delete own note' })
+  @ApiNoContentResponse({ description: 'Deleted' })
+  @ApiErrors(400, 404)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async remove(@CurrentUser() user: AuthUser, @Param('id', ParseObjectIdPipe) id: string) {

@@ -359,3 +359,27 @@ describe('brute-force protection', () => {
     await login('203.0.113.8', { email: user.email, password }).expect(200);
   });
 });
+
+describe('API documentation', () => {
+  it('serves the OpenAPI document with every route and the bearer scheme', async () => {
+    const res = await api.get('/api/docs-json').expect(200);
+    const operations = Object.values(res.body.paths as Record<string, object>).flatMap((methods) => Object.keys(methods));
+    expect(operations).toHaveLength(24);
+    expect(res.body.components.securitySchemes.jwt).toMatchObject({ type: 'http', scheme: 'bearer' });
+    expect(res.body.paths['/api/users/interests'].get.summary).toMatch(/Scenario 1/);
+    expect(res.body.paths['/api/users/{id}/posts'].get.summary).toMatch(/Scenario 2/);
+  });
+
+  it('redirects the bare API URL to the docs', async () => {
+    const res = await api.get('/').expect(302);
+    expect(res.headers.location).toBe('/api/docs');
+  });
+
+  it('serves the Swagger UI with a CSP scoped to the docs page', async () => {
+    const res = await api.get('/api/docs').expect(200);
+    expect(res.headers['content-type']).toContain('text/html');
+    expect(res.headers['content-security-policy']).toContain("script-src 'self'");
+    const apiRes = await api.get('/api/health');
+    expect(apiRes.headers['content-security-policy']).toMatch(/^default-src 'none'/);
+  });
+});

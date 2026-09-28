@@ -23,23 +23,51 @@
     "projects": [
       {
         "displayName": "unit",
-        "preset": "ts-jest",
         "testEnvironment": "node",
         "rootDir": ".",
         "testMatch": [
           "<rootDir>/src/**/*.spec.ts"
+        ],
+        "transform": {
+          "^.+\\.(t|j)s$": [
+            "ts-jest",
+            {
+              "tsconfig": {
+                "allowJs": true
+              }
+            }
+          ]
+        },
+        "transformIgnorePatterns": [
+          "/node_modules/(?!(content-disposition)/)"
+        ],
+        "setupFiles": [
+          "<rootDir>/test/setup-logger.ts"
         ]
       },
       {
         "displayName": "integration",
-        "preset": "ts-jest",
         "testEnvironment": "node",
         "rootDir": ".",
         "testMatch": [
           "<rootDir>/test/**/*.e2e-spec.ts"
         ],
         "setupFiles": [
-          "<rootDir>/test/setup-env.ts"
+          "<rootDir>/test/setup-env.ts",
+          "<rootDir>/test/setup-logger.ts"
+        ],
+        "transform": {
+          "^.+\\.(t|j)s$": [
+            "ts-jest",
+            {
+              "tsconfig": {
+                "allowJs": true
+              }
+            }
+          ]
+        },
+        "transformIgnorePatterns": [
+          "/node_modules/(?!(content-disposition)/)"
         ]
       }
     ]
@@ -47,12 +75,14 @@
   "dependencies": {
     "@fastify/cors": "^11.3.0",
     "@fastify/helmet": "^13.1.1",
+    "@fastify/static": "^10.1.5",
     "@nestjs/common": "^11.2.6",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.2.6",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/mongoose": "^11.0.4",
     "@nestjs/platform-fastify": "^11.2.6",
+    "@nestjs/swagger": "^11.4.7",
     "@nestjs/throttler": "^6.7.1",
     "bcryptjs": "^3.0.3",
     "class-transformer": "^0.5.1",

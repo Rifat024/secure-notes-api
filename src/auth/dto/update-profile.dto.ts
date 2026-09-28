@@ -10,7 +10,7 @@ export class UpdateProfileDto {
   name?: string;
 
   @IsOptional()
-  @IsStrongPassword()
+  @IsStrongPassword(false)
   password?: string;
 
   @IsOptional()

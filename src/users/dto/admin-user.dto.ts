@@ -24,7 +24,7 @@ export class AdminUpdateUserDto {
   email?: string;
 
   @IsOptional()
-  @IsStrongPassword()
+  @IsStrongPassword(false)
   password?: string;
 
   @IsOptional()

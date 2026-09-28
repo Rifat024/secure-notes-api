@@ -12,7 +12,11 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { rethrow } from '../common/utils/rethrow';
+import { ApiBearerAuth, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiErrors } from '../common/decorators/api-errors.decorator';
+import { AuthResponse, ProfileUpdateResponse, UserResponse } from '../users/dto/user.response';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -20,6 +24,9 @@ export class AuthController {
     private readonly users: UsersService,
   ) {}
 
+  @ApiOperation({ summary: 'Create an account', description: 'Always creates a regular user; roles cannot be self-assigned. Limited to 10 registrations per hour per IP.' })
+  @ApiCreatedResponse({ type: AuthResponse })
+  @ApiErrors(400, 409, 429)
   @Public()
   @Throttle({ default: SECURITY.registerRateLimit })
   @Post('register')
@@ -31,6 +38,13 @@ export class AuthController {
     }
   }
 
+  @ApiOperation({
+    summary: 'Sign in',
+    description:
+      'Returns a JWT valid for 8 hours. 5 wrong passwords lock the account for 15 minutes; 10 failures from one IP block it for 30 minutes. Both return 429 with Retry-After.',
+  })
+  @ApiOkResponse({ type: AuthResponse })
+  @ApiErrors(400, 401, 429)
   @Public()
   @Throttle({ default: SECURITY.authRateLimit })
   @HttpCode(HttpStatus.OK)
@@ -43,6 +57,10 @@ export class AuthController {
     }
   }
 
+  @ApiOperation({ summary: 'Sign out everywhere', description: 'Revokes every token issued to the caller.' })
+  @ApiBearerAuth('jwt')
+  @ApiNoContentResponse({ description: 'All sessions revoked' })
+  @ApiErrors(401)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('logout')
   async logout(@CurrentUser() user: AuthUser) {
@@ -53,6 +71,10 @@ export class AuthController {
     }
   }
 
+  @ApiOperation({ summary: 'Current user profile' })
+  @ApiBearerAuth('jwt')
+  @ApiOkResponse({ type: UserResponse })
+  @ApiErrors(401)
   @Get('me')
   async me(@CurrentUser() user: AuthUser) {
     try {
@@ -62,6 +84,10 @@ export class AuthController {
     }
   }
 
+  @ApiOperation({ summary: 'Update own profile', description: 'Changing the password revokes other sessions and returns a fresh token.' })
+  @ApiBearerAuth('jwt')
+  @ApiOkResponse({ type: ProfileUpdateResponse })
+  @ApiErrors(400, 401)
   @Patch('me')
   async updateMe(@CurrentUser() user: AuthUser, @Body() dto: UpdateProfileDto) {
     try {

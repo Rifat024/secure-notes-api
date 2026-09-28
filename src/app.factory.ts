@@ -7,6 +7,7 @@ import { createAppLogger } from './common/logging/app-logger';
 import { registerRequestLogging } from './common/logging/request-logging';
 import { registerJsonParser } from './common/http/json-parser';
 import { createValidationPipe } from './common/pipes/validation.pipe';
+import { DOCS_CSP, DOCS_PATH, setupSwagger } from './common/swagger/swagger.setup';
 import { AppConfig, appConfig } from './config/app.config';
 import { SECURITY } from './config/security.config';
 
@@ -49,13 +50,15 @@ async function buildApp(): Promise<NestFastifyApplication> {
   });
 
   const fastify = app.getHttpAdapter().getInstance();
-  fastify.addHook('onSend', async (_request, reply) => {
+  fastify.addHook('onSend', async (request, reply) => {
     reply?.header('Cache-Control', 'no-store');
+    if (request?.url?.startsWith(`/${DOCS_PATH}`)) reply?.header('Content-Security-Policy', DOCS_CSP);
   });
   registerRequestLogging(fastify);
   registerJsonParser(fastify);
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(createValidationPipe());
+  setupSwagger(app);
   return app;
 }

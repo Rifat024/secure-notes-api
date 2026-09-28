@@ -4,6 +4,7 @@ A REST API for a note-taking app, built with **NestJS on Fastify**. It covers JW
 
 - **Stack:** NestJS 11 on Fastify 5, MongoDB with Mongoose 8, JWT (HS256), bcrypt (cost 12), class-validator DTOs, `@fastify/helmet`, `@nestjs/throttler`
 - **Frontend:** [secure-notes-web](https://github.com/Rifat024/secure-notes-web)
+- **API docs (Swagger):** [secure-notes-api-ebon.vercel.app/api/docs](https://secure-notes-api-ebon.vercel.app/api/docs); the raw OpenAPI spec is at `/api/docs-json`
 
 ## Run locally
 
@@ -12,7 +13,7 @@ cp .env.example .env        # set MONGODB_URI and a random JWT_SECRET of 32+ cha
 npm install
 npm run seed                # admin, 6 users with interests, notes, posts
 npm run dev                 # http://localhost:4000 (watch mode)
-npm test                    # 94 tests: 63 unit + 31 integration on an in-memory MongoDB
+npm test                    # 97 tests: 63 unit + 34 integration on an in-memory MongoDB
 npm run explain             # prints the winning query plan for every query and aggregation
 npm run e2e                 # end-to-end checks against a running API (API_URL=...)
 ```
@@ -32,7 +33,8 @@ src/
 ├── config/                     env validation, app config, security constants
 ├── database/                   Mongoose connection + syncIndexes() on bootstrap
 ├── common/
-│   ├── decorators/             @Public, @Roles, @CurrentUser
+│   ├── swagger/                OpenAPI document, UI setup, docs-only CSP
+│   ├── decorators/             @Public, @Roles, @CurrentUser, @ApiErrors
 │   ├── guards/                 JwtAuthGuard, RolesGuard, AppThrottlerGuard
 │   ├── filters/                AllExceptionsFilter → { error, details? }
 │   ├── pipes/                  ValidationPipe factory, ParseObjectIdPipe
@@ -47,7 +49,7 @@ src/
 ├── admin/                      admin users + admin notes controllers
 ├── health/
 └── cli/                        seed.ts, explain.ts (standalone Nest contexts)
-test/app.e2e-spec.ts            integration suite (real Fastify app + in-memory MongoDB)
+test/app.e2e-spec.ts            integration suite (real Fastify app + in-memory MongoDB, docs included)
 scripts/                        deploy.sh, e2e.js
 ```
 
@@ -60,6 +62,16 @@ scripts/                        deploy.sh, e2e.js
   - anything else becomes a logged 500
 - Every service, controller, guard, and pipe wraps its logic in try/catch with `rethrow`. It lets intentional HTTP errors pass through unchanged and turns anything unexpected into a logged 500, tagged with the class and method name.
 - `AllExceptionsFilter` renders every error as `{ error, details? }` and never includes stack traces.
+
+## API documentation
+
+Interactive Swagger UI is served at **`/api/docs`**, and the bare API URL redirects there. The OpenAPI 3 document is at **`/api/docs-json`**.
+
+- Request schemas come from the same `class-validator` DTOs that validate requests (via the `@nestjs/swagger` compiler plugin), so the docs can't drift from the validation rules.
+- Response models, the `{ error, details? }` error shape, and the status codes each endpoint can return are declared explicitly.
+- To call protected endpoints: run `POST /api/auth/login` (its example body is the demo admin), click **Authorize**, and paste the token. The token persists across page reloads.
+- The docs page has its own content security policy that allows Swagger's scripts and styles. Every API response keeps `default-src 'none'`.
+- Set `SWAGGER_ENABLED=false` to turn the docs off.
 
 ## Roles
 
@@ -85,6 +97,7 @@ All list endpoints accept `?page=` (default 1) and `?limit=` (default 10, max 10
 
 | Method | Path | Auth | Purpose |
 |---|---|---|---|
+| GET | `/api/docs` · `/api/docs-json` | – | Swagger UI · OpenAPI document |
 | GET | `/api/health` | – | Liveness check |
 | POST | `/api/auth/register` | – | Create an account; returns `{ token, user }` |
 | POST | `/api/auth/login` | – | Returns `{ token, user }` |
