@@ -28,22 +28,10 @@
         "testMatch": [
           "<rootDir>/src/**/*.spec.ts"
         ],
-        "transform": {
-          "^.+\\.(t|j)s$": [
-            "ts-jest",
-            {
-              "tsconfig": {
-                "allowJs": true
-              }
-            }
-          ]
-        },
-        "transformIgnorePatterns": [
-          "/node_modules/(?!(content-disposition)/)"
-        ],
         "setupFiles": [
           "<rootDir>/test/setup-logger.ts"
-        ]
+        ],
+        "preset": "ts-jest"
       },
       {
         "displayName": "integration",
@@ -56,19 +44,7 @@
           "<rootDir>/test/setup-env.ts",
           "<rootDir>/test/setup-logger.ts"
         ],
-        "transform": {
-          "^.+\\.(t|j)s$": [
-            "ts-jest",
-            {
-              "tsconfig": {
-                "allowJs": true
-              }
-            }
-          ]
-        },
-        "transformIgnorePatterns": [
-          "/node_modules/(?!(content-disposition)/)"
-        ]
+        "preset": "ts-jest"
       }
     ]
   },
@@ -108,6 +84,9 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "fastify": "$fastify"
+    "fastify": "$fastify",
+    "@fastify/static": {
+      "content-disposition": "2.0.1"
+    }
   }
 }
